@@ -1,7 +1,7 @@
 import React from 'react'
 import '../styles/WeatherCard.css'
 
-const WeatherCard = ({ data }) => {
+const WeatherCard = ({ data, onClick }) => {
   const { temp, feels_like, humidity, pressure } = data.main
   const { description, icon } = data.weather[0]
   const { speed } = data.wind
@@ -16,7 +16,7 @@ const WeatherCard = ({ data }) => {
   const formattedWindSpeed = typeof speed === 'number' ? speed.toFixed(1) : speed
 
   return (
-    <div className="weather-card">
+    <div className="weather-card" onClick={onClick}>
       <div className="weather-header">
         <h2>{cityName}, {country}</h2>
         <p className="weather-description">{description}</p>
@@ -38,6 +38,10 @@ const WeatherCard = ({ data }) => {
         <DetailItem icon="💧" label="Humidity" value={`${formattedHumidity}%`} />
         <DetailItem icon="🌪️" label="Wind Speed" value={`${formattedWindSpeed} m/s`} />
         <DetailItem icon="🔽" label="Pressure" value={`${formattedPressure} hPa`} />
+      </div>
+
+      <div className="weather-card-hint">
+        Click for more details →
       </div>
     </div>
   )

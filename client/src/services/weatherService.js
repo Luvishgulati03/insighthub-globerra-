@@ -27,23 +27,38 @@ export const fetchWeatherData = async (city) => {
     // Transform the data to match OpenWeather format
     const data = response.data
     const current = data.current_condition[0]
+    const nearest = data.nearest_area[0]
     
     return {
       name: city,
-      sys: { country: data.nearest_area[0].country[0].value },
+      sys: { 
+        country: nearest.country[0].value,
+        sunrise: data.weather[0].astronomy[0].sunrise,
+        sunset: data.weather[0].astronomy[0].sunset
+      },
       main: {
         temp: parseFloat(current.temp_C),
         feels_like: parseFloat(current.FeelsLikeC),
         humidity: parseFloat(current.humidity),
-        pressure: parseFloat(current.pressure)
+        pressure: parseFloat(current.pressure),
+        temp_min: parseFloat(data.weather[0].mintempC),
+        temp_max: parseFloat(data.weather[0].maxtempC)
       },
       weather: [{
         description: current.weatherDesc[0].value,
         icon: getWeatherIcon(current.weatherCode)
       }],
       wind: {
-        speed: Math.round(parseFloat(current.windspeedKmph) / 3.6 * 10) / 10 // Convert to m/s and round to 1 decimal
-      }
+        speed: Math.round(parseFloat(current.windspeedKmph) / 3.6 * 10) / 10, // Convert to m/s and round to 1 decimal
+        deg: parseFloat(current.winddirDegree),
+        direction: current.winddir16Point
+      },
+      clouds: {
+        all: parseFloat(current.cloudcover)
+      },
+      visibility: parseFloat(current.visibility),
+      uv: parseFloat(current.uvIndex),
+      precipitation: parseFloat(current.precipMM)
     }
   } catch (error) {
     if (error.response) {

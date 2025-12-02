@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import WeatherCard from '../components/WeatherCard'
+import WeatherModal from '../components/WeatherModal'
 import LoadingSpinner from '../components/LoadingSpinner'
 import ErrorMessage from '../components/ErrorMessage'
 import { fetchWeatherData } from '../services/weatherService'
@@ -11,6 +12,7 @@ const Weather = () => {
   const [error, setError] = useState(null)
   const [city, setCity] = useState('London')
   const [searchInput, setSearchInput] = useState('')
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     loadWeather(city)
@@ -38,6 +40,14 @@ const Weather = () => {
     }
   }
 
+  const handleCardClick = () => {
+    setShowModal(true)
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+  }
+
   return (
     <div className="weather-page">
       <h2 className="page-heading">Weather Information</h2>
@@ -51,10 +61,14 @@ const Weather = () => {
       <div className="weather-content">
         {loading && <LoadingSpinner />}
         {error && <ErrorMessage message={error} />}
-        {weather && !loading && <WeatherCard data={weather} />}
+        {weather && !loading && <WeatherCard data={weather} onClick={handleCardClick} />}
       </div>
 
       {weather && <ForecastInfo />}
+      
+      {showModal && weather && (
+        <WeatherModal data={weather} onClose={handleCloseModal} />
+      )}
     </div>
   )
 }
