@@ -2,8 +2,6 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
-import Analytics from './pages/Analytics'
-import Reports from './pages/Reports'
 import Weather from './pages/Weather'
 import Crypto from './pages/Crypto'
 import Countries from './pages/Countries'
@@ -19,8 +17,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
-          <Route path="analytics" element={<Analytics />} />
-          <Route path="reports" element={<Reports />} />
           <Route path="weather" element={<Weather />} />
           <Route path="crypto" element={<Crypto />} />
           <Route path="countries" element={<Countries />} />
