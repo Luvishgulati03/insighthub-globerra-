@@ -8,6 +8,8 @@ const Sidebar = () => {
     { path: '/analytics', icon: '📈', label: 'Analytics' },
     { path: '/reports', icon: '📄', label: 'Reports' },
     { path: '/weather', icon: '🌤️', label: 'Weather' },
+    { path: '/crypto', icon: '₿', label: 'Crypto' },
+    { path: '/countries', icon: '🌍', label: 'Countries' },
     { path: '/settings', icon: '⚙️', label: 'Settings' }
   ]
 
