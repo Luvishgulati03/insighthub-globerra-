@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import TopBar from './TopBar'
 import '../styles/Layout.css'
 
 const Layout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+
   return (
     <div className="layout">
-      <Sidebar />
-      <div className="main-content">
+      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+      <div className={`main-content ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
         <TopBar />
         <main className="content-area">
           <Outlet />

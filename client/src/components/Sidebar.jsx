@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
 import '../styles/Sidebar.css'
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true)
-
+const Sidebar = ({ isOpen, setIsOpen }) => {
   const menuItems = [
     { path: '/', icon: '📊', label: 'Dashboard' },
     { path: '/weather', icon: '🌤️', label: 'Weather' },
