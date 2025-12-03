@@ -9,11 +9,12 @@ import '../styles/Countries.css'
 const Countries = () => {
   const [countries, setCountries] = useState([])
   const [filteredCountries, setFilteredCountries] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedRegion, setSelectedRegion] = useState('All')
   const [populationRange, setPopulationRange] = useState('All')
+  const [hasLoaded, setHasLoaded] = useState(false)
   const navigate = useNavigate()
 
   const regions = ['All', 'Africa', 'Americas', 'Asia', 'Europe', 'Oceania']
@@ -25,9 +26,7 @@ const Countries = () => {
     { label: '> 100M', min: 100000000, max: Infinity }
   ]
 
-  useEffect(() => {
-    loadCountries()
-  }, [])
+  // Don't auto-load on mount - wait for user to click load button
 
   useEffect(() => {
     filterCountries()
@@ -41,6 +40,7 @@ const Countries = () => {
       const data = await fetchAllCountries()
       setCountries(data)
       setFilteredCountries(data)
+      setHasLoaded(true)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -78,71 +78,86 @@ const Countries = () => {
     navigate(`/countries/${country.cca3}`, { state: { country } })
   }
 
-  if (loading) {
-    return (
-      <div className="countries-page">
-        <h2 className="page-heading">Countries Explorer</h2>
-        <LoadingSpinner />
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="countries-page">
-        <h2 className="page-heading">Countries Explorer</h2>
-        <ErrorMessage message={error} />
-      </div>
-    )
-  }
-
   return (
     <div className="countries-page">
       <h2 className="page-heading">Countries Explorer</h2>
 
-      <div className="countries-filters">
-        <input
-          type="text"
-          placeholder="Search countries..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
+      {!hasLoaded && !loading && !error && (
+        <div className="welcome-section">
+          <p className="welcome-text">
+            Explore detailed information about countries around the world
+          </p>
+          <button onClick={loadCountries} className="load-btn">
+            🌍 Load Countries Data
+          </button>
+          <p className="api-note">
+            Note: Due to CORS restrictions in development, you may need to use a CORS proxy or browser extension.
+            <br />
+            Alternatively, this will work fine in production.
+          </p>
+        </div>
+      )}
 
-        <select
-          value={selectedRegion}
-          onChange={(e) => setSelectedRegion(e.target.value)}
-          className="filter-select"
-        >
-          {regions.map(region => (
-            <option key={region} value={region}>{region}</option>
-          ))}
-        </select>
+      {loading && <LoadingSpinner />}
 
-        <select
-          value={populationRange}
-          onChange={(e) => setPopulationRange(e.target.value)}
-          className="filter-select"
-        >
-          {populationRanges.map(range => (
-            <option key={range.label} value={range.label}>{range.label}</option>
-          ))}
-        </select>
-      </div>
+      {error && (
+        <div>
+          <ErrorMessage message={error} />
+          <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+            <button onClick={loadCountries} className="retry-btn">
+              🔄 Retry
+            </button>
+          </div>
+        </div>
+      )}
 
-      <div className="countries-count">
-        Showing {filteredCountries.length} of {countries.length} countries
-      </div>
+      {hasLoaded && !loading && !error && (
+        <>
+          <div className="countries-filters">
+            <input
+              type="text"
+              placeholder="Search countries..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
 
-      <div className="countries-grid">
-        {filteredCountries.map((country) => (
-          <CountryCard
-            key={country.cca3}
-            country={country}
-            onClick={() => handleCountryClick(country)}
-          />
-        ))}
-      </div>
+            <select
+              value={selectedRegion}
+              onChange={(e) => setSelectedRegion(e.target.value)}
+              className="filter-select"
+            >
+              {regions.map(region => (
+                <option key={region} value={region}>{region}</option>
+              ))}
+            </select>
+
+            <select
+              value={populationRange}
+              onChange={(e) => setPopulationRange(e.target.value)}
+              className="filter-select"
+            >
+              {populationRanges.map(range => (
+                <option key={range.label} value={range.label}>{range.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="countries-count">
+            Showing {filteredCountries.length} of {countries.length} countries
+          </div>
+
+          <div className="countries-grid">
+            {filteredCountries.map((country) => (
+              <CountryCard
+                key={country.cca3}
+                country={country}
+                onClick={() => handleCountryClick(country)}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }
