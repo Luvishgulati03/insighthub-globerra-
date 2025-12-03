@@ -10,6 +10,8 @@ const Sidebar = () => {
     { path: '/weather', icon: '🌤️', label: 'Weather' },
     { path: '/crypto', icon: '₿', label: 'Crypto' },
     { path: '/countries', icon: '🌍', label: 'Countries' },
+    { path: '/github', icon: '💻', label: 'GitHub' },
+    { path: '/news', icon: '📰', label: 'News' },
     { path: '/settings', icon: '⚙️', label: 'Settings' }
   ]
 
