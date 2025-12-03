@@ -13,15 +13,15 @@ const News = () => {
   const categories = ['all', 'technology', 'business', 'science', 'health', 'sports', 'entertainment']
 
   useEffect(() => {
-    loadNews()
-  }, [])
+    loadNews(selectedCategory)
+  }, [selectedCategory])
 
-  const loadNews = async () => {
+  const loadNews = async (category) => {
     setLoading(true)
     setError(null)
 
     try {
-      const data = await fetchNews()
+      const data = await fetchNews(category)
       setArticles(data)
     } catch (err) {
       setError(err.message)
@@ -30,9 +30,7 @@ const News = () => {
     }
   }
 
-  const filteredArticles = selectedCategory === 'all' 
-    ? articles 
-    : articles.filter(article => article.category === selectedCategory)
+  const filteredArticles = articles
 
   const formatDate = (dateString) => {
     const date = new Date(dateString)

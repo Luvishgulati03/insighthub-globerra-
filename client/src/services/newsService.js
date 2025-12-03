@@ -1,29 +1,45 @@
 import axios from 'axios'
 
-// Using GNews API - free tier available
-const GNEWS_API = 'https://gnews.io/api/v4'
-const API_KEY = 'your_api_key_here' // User will need to get their own key
+// Using NewsAPI.org - Free tier: 100 requests/day
+const NEWS_API = 'https://newsapi.org/v2'
+const API_KEY = 'a11f9d037b784637998640823e9d02e6'
 
-// Backup: Using NewsData.io API
-const NEWSDATA_API = 'https://newsdata.io/api/1'
-
-// For demo purposes, we'll use a mock news feed
-export const fetchNews = async (category = 'general', country = 'us') => {
+export const fetchNews = async (category = 'general') => {
   try {
-    // Using mediastack API (free tier)
-    const response = await axios.get(`http://api.mediastack.com/v1/news`, {
+    // Fetch top headlines from NewsAPI
+    const endpoint = category === 'all' || category === 'general' 
+      ? `${NEWS_API}/top-headlines`
+      : `${NEWS_API}/top-headlines`
+    
+    const response = await axios.get(endpoint, {
       params: {
-        access_key: 'demo', // This will fail, so we'll use mock data
-        countries: country,
-        categories: category,
-        limit: 20
+        apiKey: API_KEY,
+        country: 'us',
+        category: category === 'all' ? undefined : category,
+        pageSize: 20
       }
     })
 
-    return response.data.data
+    // Transform NewsAPI data to our format
+    return response.data.articles.map(article => ({
+      title: article.title,
+      description: article.description || 'No description available',
+      image: article.urlToImage || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400',
+      url: article.url,
+      source: article.source.name,
+      publishedAt: article.publishedAt,
+      category: category === 'all' ? 'general' : category
+    }))
   } catch (error) {
-    console.log('Using mock news data for demo')
-    // Return mock data for demo
+    console.error('NewsAPI Error:', error)
+    
+    // If API key is not set or there's an error, use mock data
+    if (API_KEY === 'YOUR_API_KEY_HERE') {
+      console.log('⚠️ Please set your NewsAPI.org API key in newsService.js')
+      console.log('Get your free API key at: https://newsapi.org/register')
+    }
+    
+    // Return mock data as fallback
     return getMockNews()
   }
 }
